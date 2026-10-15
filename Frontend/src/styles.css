@@ -70,7 +70,7 @@ main, .nav, .footer { max-width: 1120px; margin-inline: auto; padding-inline: 20
 :root[data-theme='dark'] .btn-primario { background: var(--tiza); color: #2a2208; }
 .btn-grande { padding: 14px 26px; font-size: 1.05rem; }
 
-/* Hero: pizarra con cuadrícula */
+/* Hero: pizarra con cuadricula */
 .hero {
   display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center;
   margin-top: 12px; padding: 56px 48px; border-radius: 28px; color: #f3f6f3;
