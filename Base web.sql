@@ -1,0 +1,6 @@
+Create DataBase WED_COSTUMER
+GO
+
+
+USE WED_COSTUMER
+GO
