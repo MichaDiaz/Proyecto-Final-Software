@@ -1,52 +1,42 @@
-import { createContext, useContext, useState } from 'react'
-import { usuarios } from '../data/usuarios.js'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { api } from '../api/index.js'
+import { borrarToken, guardarToken, leerToken } from '../api/sesion.js'
 
-// CONCEPTO 7: CONTEXTO. Sirve para compartir un dato (quién inició sesión)
-// con TODOS los componentes sin pasarlo como prop por cada nivel.
+// CONTEXTO: comparte quién inició sesión con TODOS los componentes sin pasar props nivel por nivel.
 const AuthContext = createContext(null)
-const CLAVE = 'homeclass-sesion'
-
-function leerSesion() {
-  try {
-    const texto = sessionStorage.getItem(CLAVE)
-    return texto ? JSON.parse(texto) : null
-  } catch {
-    return null
-  }
-}
 
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(leerSesion)
+  const [usuario, setUsuario] = useState(null)
+  const [cargando, setCargando] = useState(Boolean(leerToken())) // ¿hay sesión guardada por verificar?
 
-  function ingresar(correo, clave) {
-    const encontrado = usuarios.find(
-      (u) => u.correo === correo.trim().toLowerCase() && u.clave === clave,
-    )
-    if (!encontrado) return { ok: false, error: 'Correo o contraseña incorrectos.' }
+  // Al abrir la página, si había una sesión guardada, pedimos los datos del usuario al "servidor".
+  useEffect(() => {
+    if (!leerToken()) return
+    let vigente = true
+    api.auth.sesion()
+      .then((u) => vigente && setUsuario(u))
+      .catch(() => borrarToken())
+      .finally(() => vigente && setCargando(false))
+    return () => { vigente = false }
+  }, [])
 
-    const sesion = { correo: encontrado.correo, nombre: encontrado.nombre, rol: encontrado.rol }
-    setUsuario(sesion)
-    try {
-      sessionStorage.setItem(CLAVE, JSON.stringify(sesion))
-    } catch {
-      /* sin almacenamiento: la sesión dura hasta recargar */
-    }
-    return { ok: true }
-  }
+  const ingresar = useCallback(async (correo, clave) => {
+    const { token, usuario: u } = await api.auth.login(correo, clave)
+    guardarToken(token)
+    setUsuario(u)
+    return u
+  }, [])
 
-  function salir() {
+  const salir = useCallback(async () => {
+    await api.auth.salir()
+    borrarToken()
     setUsuario(null)
-    try {
-      sessionStorage.removeItem(CLAVE)
-    } catch {
-      /* nada */
-    }
-  }
+  }, [])
 
-  return <AuthContext.Provider value={{ usuario, ingresar, salir }}>{children}</AuthContext.Provider>
+  const valor = useMemo(() => ({ usuario, cargando, ingresar, salir, setUsuario }), [usuario, cargando, ingresar, salir])
+  return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>
 }
 
-// Hook para leer el contexto desde cualquier componente: const { usuario } = useAuth()
 export function useAuth() {
   return useContext(AuthContext)
 }

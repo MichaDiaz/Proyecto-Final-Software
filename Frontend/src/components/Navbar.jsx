@@ -1,31 +1,40 @@
+import { Link, useNavigate } from 'react-router-dom'
 import useTheme from '../hooks/useTheme.js'
+import { useAuth } from '../context/AuthContext.jsx'
 
+// Barra de la parte pública (inicio e ingreso).
 export default function Navbar() {
   const { tema, alternar } = useTheme()
+  const { usuario, salir } = useAuth()
+  const navegar = useNavigate()
+
+  async function alSalir() {
+    await salir()
+    navegar('/')
+  }
 
   return (
     <header className="nav">
-      <a className="brand" href="/" aria-label="HomeClass, inicio">
+      <Link className="brand" to="/" aria-label="HomeClass, inicio">
         <span className="brand-mark"><i className="bi bi-house-heart-fill" /></span>
         <span>
           <strong className="brand-name">HomeClass</strong>
           <small>Entorno Académico</small>
         </span>
-      </a>
+      </Link>
 
       <div className="nav-actions">
-        {/* onClick recibe una función: React la llama cuando haces clic */}
-        <button
-          type="button"
-          className="icon-btn"
-          onClick={alternar}
-          aria-label={tema === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
-        >
-          {/* Renderizado condicional: según el estado, mostramos un icono u otro */}
+        <button type="button" className="icon-btn" onClick={alternar} aria-label={tema === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}>
           <i className={tema === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars'} />
         </button>
-        {/* En el proyecto real este enlace lleva al login de ASP.NET */}
-        <a className="btn btn-tiza" href="/Cuenta/Ingresar">Ingresar</a>
+        {usuario ? (
+          <>
+            <Link className="btn btn-tiza" to="/app">Mi panel</Link>
+            <button type="button" className="btn btn-claro" onClick={alSalir}>Salir</button>
+          </>
+        ) : (
+          <Link className="btn btn-tiza" to="/ingresar">Ingresar</Link>
+        )}
       </div>
     </header>
   )

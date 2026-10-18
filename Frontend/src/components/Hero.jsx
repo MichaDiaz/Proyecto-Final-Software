@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import EntregaDemo from './EntregaDemo.jsx'
 
 export default function Hero() {
@@ -9,10 +10,9 @@ export default function Hero() {
           HomeClass reúne cursos, calificaciones, asistencia y entregas en un solo lugar.
           Cada persona entra a un panel hecho para lo que necesita ver y hacer.
         </p>
-        <a className="btn btn-tiza btn-grande" href="/Cuenta/Ingresar">Ingresar a mi panel</a>
+        {/* Si no hay sesión, /app te manda a /ingresar y luego te devuelve al panel */}
+        <Link className="btn btn-tiza btn-grande" to="/app">Ingresar a mi panel</Link>
       </div>
-
-      {/* Un componente se usa como una etiqueta HTML propia */}
       <EntregaDemo />
     </section>
   )
