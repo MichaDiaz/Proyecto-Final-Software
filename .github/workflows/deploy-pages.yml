@@ -1,6 +1,6 @@
 name: Publicar HomeClass en GitHub Pages
 
-on:
+'on':
   push:
     branches: [main]
   workflow_dispatch:
