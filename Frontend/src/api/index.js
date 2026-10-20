@@ -1,7 +1,4 @@
-// ÚNICO punto de entrada a los datos. Las pantallas importan { api } y nunca saben
-// si los datos vienen del mock o del backend real. Para cambiar: VITE_USE_MOCK en .env.
-import { USE_MOCK } from '../config.js'
-import { mockApi } from './mock/services.js'
+// Único punto de entrada a los datos; toda la información persistente viene del backend.
 import { httpApi } from './http.js'
 
-export const api = USE_MOCK ? mockApi : httpApi
+export const api = httpApi

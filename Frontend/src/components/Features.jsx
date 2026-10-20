@@ -1,12 +1,15 @@
-import { funcionalidades } from '../data/roles.js'
+import { funcionalidades } from '../data/funcionalidades.js'
 
 export default function Features() {
   return (
-    <section className="seccion" aria-labelledby="titulo-func">
-      <h2 id="titulo-func" className="titulo-seccion">Lo que hace el día a día más simple</h2>
-      <div className="rejilla">
+    <section className="landing-seccion" id="funcionalidades" aria-labelledby="titulo-func">
+      <div className="landing-seccion-cabecera">
+        <p className="landing-eyebrow">Una plataforma, tareas conectadas</p>
+        <h2 id="titulo-func">Todo lo necesario para acompañar el aprendizaje.</h2>
+        <p>Herramientas prácticas para organizar el trabajo académico y tener una visión más completa de cada curso.</p>
+      </div>
+      <div className="landing-funciones">
         {funcionalidades.map((f) => (
-          // Pasar un objeto completo con {...f} es un atajo para pasar todas sus propiedades como props
           <FeatureCard key={f.id} {...f} />
         ))}
       </div>
@@ -16,8 +19,8 @@ export default function Features() {
 
 function FeatureCard({ icono, titulo, texto }) {
   return (
-    <article className="feature">
-      <span className="feature-icono"><i className={`bi ${icono}`} /></span>
+    <article className="landing-funcion">
+      <span className="landing-funcion-icono"><i className={`bi ${icono}`} /></span>
       <h3>{titulo}</h3>
       <p>{texto}</p>
     </article>

@@ -1,13 +1,6 @@
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
-import { USE_MOCK } from '../config.js'
-
-const EJEMPLOS = [
-  { rol: 'Administración', correo: 'admin@homeclass.edu', clave: 'Admin#2026' },
-  { rol: 'Docente', correo: 'docente@homeclass.edu', clave: 'Docente#2026' },
-  { rol: 'Estudiante', correo: 'estudiante@homeclass.edu', clave: 'Estudiante#2026' },
-]
 
 export default function Ingresar() {
   const { usuario, ingresar } = useAuth()
@@ -51,18 +44,6 @@ export default function Ingresar() {
         <button type="submit" className="btn btn-primario" disabled={enviando}>{enviando ? 'Ingresando…' : 'Ingresar'}</button>
       </form>
 
-      {USE_MOCK && (
-        <div className="ejemplos">
-          <p className="demo-etiqueta">Cuentas de ejemplo (clic para rellenar)</p>
-          <div className="ejemplos-botones">
-            {EJEMPLOS.map((u) => (
-              <button key={u.correo} type="button" className="tab" onClick={() => { setCorreo(u.correo); setClave(u.clave); setError(null) }}>
-                {u.rol}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </section>
   )
 }

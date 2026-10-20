@@ -1,4 +1,4 @@
-// Guarda el "token" de sesión. En el mock es el id del usuario; con backend real será el JWT.
+// Guarda el token de sesión emitido por el backend.
 const CLAVE = 'homeclass-token'
 
 export function leerToken() {

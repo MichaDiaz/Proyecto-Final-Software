@@ -2,8 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // Vite sirve la página mientras desarrollas (npm run dev) y la empaqueta (npm run build).
-// Cuando exista el backend: en .env pon VITE_USE_MOCK=false y VITE_PROXY=http://localhost:5000
-// y todas las llamadas a /api se reenvían al backend (sin problemas de CORS en desarrollo).
+// En .env define VITE_PROXY=http://localhost:5000 para reenviar /api al backend durante desarrollo.
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {

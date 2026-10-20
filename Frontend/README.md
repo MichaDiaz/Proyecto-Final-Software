@@ -1,8 +1,9 @@
 # HomeClass · Entorno Académico (Frontend)
 
-Aplicación web en **React + Vite** con tres paneles según el rol: **Administración, Docente y Estudiante**.
-Hoy funciona completa con datos de ejemplo guardados en el navegador. Cuando el backend (C# / .NET) y la base
-de datos (SQL Server) estén listos, se conecta cambiando **una sola variable**, sin tocar las pantallas.
+Aplicación web en **React + Vite** para organizar cursos y dar seguimiento académico a instituciones educativas.
+Los datos persistentes se consultan y modifican exclusivamente mediante la API HTTP documentada en `docs/API.md`.
+El backend y la base de datos aún deben implementarse; mientras tanto, el inicio de sesión y las funciones que
+requieren datos mostrarán un error de conexión y no guardarán registros de ejemplo en el navegador.
 
 ## Cómo correrlo
 
@@ -14,17 +15,6 @@ npm install
 npm run dev        # abre http://localhost:5173
 npm run build      # genera la carpeta dist/ para publicar
 ```
-
-### Cuentas de ejemplo (modo mock)
-
-| Rol | Correo | Contraseña |
-|---|---|---|
-| Administración | admin@homeclass.edu | Admin#2026 |
-| Docente | docente@homeclass.edu | Docente#2026 |
-| Estudiante | estudiante@homeclass.edu | Estudiante#2026 |
-
-En la página de ingreso hay botones que las rellenan con un clic.
-Para volver a los datos originales, borra los datos del sitio en el navegador (F12 › Application › Clear site data).
 
 ## Qué puede hacer cada rol
 
@@ -49,12 +39,11 @@ Frontend/
 ├── docs/API.md            ← contrato para el backend y la base de datos
 └── src/
     ├── main.jsx · App.jsx          arranque y rutas
-    ├── config.js                   configuración (mock/backend, reglas de archivos)
+    ├── config.js                   configuración de API y reglas de archivos
     ├── api/
     │   ├── index.js                ÚNICO punto de acceso a datos: import { api } from '../api'
     │   ├── http.js                 implementación REAL (fetch al backend)
     │   ├── sesion.js               token de sesión
-    │   └── mock/                   implementación de EJEMPLO (localStorage + IndexedDB)
     ├── context/                    AuthContext (sesión) y ToastContext (avisos)
     ├── hooks/                      useAsync (cargar datos), useTheme (claro/oscuro)
     ├── utils/                      calculos (reglas), formato, archivos (validación)
@@ -69,17 +58,13 @@ Frontend/
 
 ## Cómo se conecta el backend después
 
-1. Copia `.env.example` como `.env` y pon:
+1. Copia `.env.example` como `.env` y configura:
    ```
-   VITE_USE_MOCK=false
    VITE_API_URL=/api
    VITE_PROXY=http://localhost:5000      # dirección del backend en desarrollo
    ```
 2. Implementa en el backend los endpoints de **`docs/API.md`** (mismas rutas y mismas respuestas).
-3. Listo: `src/api/http.js` ya llama a esas rutas. Ninguna pantalla cambia.
-
-`src/api/mock/services.js` y `src/api/http.js` exponen **exactamente los mismos métodos**: el mock es la
-"especificación ejecutable" de lo que el backend debe devolver. Si algo no cuadra, compara ambos.
+3. `src/api/http.js` ya consume esas rutas. Ninguna pantalla necesita almacenar los registros localmente.
 
 Reglas que el backend debe aplicar sí o sí (el frontend solo las valida para dar mensajes rápidos):
 autenticación y permisos por rol y por curso, validación de tipo/tamaño de archivo, que los archivos se
@@ -87,6 +72,5 @@ guarden **fuera de la carpeta pública** con nombre aleatorio, y descargas solo 
 
 ## Seguridad
 
-- En modo mock las contraseñas viven en el navegador: **solo sirve para demostración**.
-- Con el backend real, el login debe devolver un token (JWT o cookie); el frontend lo envía en `Authorization: Bearer`.
+- El login requiere un backend que devuelva un token; el frontend lo envía en `Authorization: Bearer`.
 - Los textos se muestran con React, que escapa el HTML por defecto (no usar `dangerouslySetInnerHTML`).

@@ -1,5 +1,4 @@
-// Implementación REAL de la API: habla con el backend por HTTP (JSON y multipart).
-// Tiene los MISMOS métodos y la misma forma de respuesta que mock/services.js.
+// Única implementación de datos: habla con el backend por HTTP (JSON y multipart).
 // Qué debe devolver cada endpoint está documentado en docs/API.md.
 import { API_URL } from '../config.js'
 import { leerToken } from './sesion.js'
@@ -23,6 +22,10 @@ async function pedir(metodo, ruta, { cuerpo, formData, blob } = {}) {
   }
 
   if (!res.ok) {
+    const tipoContenido = res.headers.get('Content-Type') || ''
+    if (res.status === 404 && !tipoContenido.includes('application/json')) {
+      throw new Error('El backend todavía no está disponible. Configura VITE_PROXY cuando esté construido.')
+    }
     // El backend debe responder { "mensaje": "..." } en los errores.
     let mensaje = `Error ${res.status}`
     try { mensaje = (await res.json()).mensaje ?? mensaje } catch { /* sin cuerpo */ }
@@ -46,7 +49,6 @@ export const httpApi = {
     login: (correo, clave) => post('/auth/login', { correo, clave }),
     sesion: () => get('/auth/sesion'),
     salir: async () => {},
-    reiniciarDemo: async () => {},
   },
   dashboard: { obtener: () => get('/dashboard') },
   usuarios: {
