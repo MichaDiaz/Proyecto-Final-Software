@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
+    base: mode === 'production' ? '/Proyecto-Final-Software/' : '/',
     plugins: [react()],
     server: env.VITE_PROXY
       ? { proxy: { '/api': { target: env.VITE_PROXY, changeOrigin: true } } }
