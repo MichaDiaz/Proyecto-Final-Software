@@ -41,6 +41,34 @@ namespace HomeClassApi.Models
         public bool Activo { get; set; }
     }
 
+    public class UsuarioRequest
+    {
+        public string Nombre { get; set; }
+        public string Correo { get; set; }
+        public string Rol { get; set; }
+        public string Clave { get; set; }
+        public bool Activo { get; set; }
+    }
+
+    public class CursoRequest
+    {
+        public string Codigo { get; set; }
+        public string Nombre { get; set; }
+        public string Periodo { get; set; }
+        public string Descripcion { get; set; }
+        public int? DocenteId { get; set; }
+    }
+
+    public class MatriculaRequest
+    {
+        public int EstudianteId { get; set; }
+    }
+
+    public class PerfilRequest
+    {
+        public string Nombre { get; set; }
+    }
+
     public class CursoSeed
     {
         public int Id { get; set; }
@@ -54,5 +82,35 @@ namespace HomeClassApi.Models
     public class RespuestaError
     {
         public string Mensaje { get; set; }
+    }
+
+    public class EvaluacionRequest
+    {
+        public string Nombre { get; set; }
+        public string Tipo { get; set; }
+        public decimal Peso { get; set; }
+        public System.DateTime Fecha { get; set; }
+        public string Instrucciones { get; set; }
+        public bool RequiereEntrega { get; set; }
+        public string Extensiones { get; set; }
+        public int MaxMb { get; set; }
+        public bool PermiteTardia { get; set; }
+    }
+
+    public class NotaRequest
+    {
+        public decimal? Nota { get; set; }
+    }
+
+    public class AsistenciaRequest
+    {
+        public string Fecha { get; set; }
+        public List<AsistenciaRegistroRequest> Registros { get; set; }
+    }
+
+    public class AsistenciaRegistroRequest
+    {
+        public int EstudianteId { get; set; }
+        public bool Presente { get; set; }
     }
 }

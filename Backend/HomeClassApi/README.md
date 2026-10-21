@@ -4,11 +4,10 @@ Backend ASP.NET Web API para la app del frontend `Frontend`.
 
 ## Qué contiene
 
-- Autenticación con JWT-like token en memoria.
-- Login con `POST /api/auth/login`.
-- Sesión con `GET /api/auth/sesion`.
-- Dashboard compatible con la interfaz del frontend.
-- Endpoints básicos de usuarios y cursos para cargar la aplicación.
+- Autenticación por token Bearer y sesiones activas verificadas contra SQL Server.
+- Endpoints del contrato `Frontend/docs/API.md`: usuarios, perfil, cursos, evaluaciones, notas, asistencia, materiales y entregas.
+- Archivos almacenados fuera del sitio web, con identificadores aleatorios y descargas autorizadas.
+- Datos académicos de demostración creados por `DB/Base web.sql`.
 
 ## Requisitos
 
@@ -17,10 +16,10 @@ Backend ASP.NET Web API para la app del frontend `Frontend`.
 
 ## Ejecutar
 
-1. Abrir la solución en Visual Studio.
-2. Seleccionar `HomeClassApi` como proyecto de inicio.
-3. Presionar `F5` para iniciar el servidor.
-4. El backend quedará en `http://localhost:5000`.
+1. Ejecutar `DB/Base web.sql` en una instancia local de SQL Server.
+2. Si la instancia no es `localhost`/`.`, ajustar la cadena `HomeClassDb` de `Web.config`.
+3. Abrir el proyecto en Visual Studio, seleccionar `HomeClassApi` como inicio y presionar `F5`.
+4. El backend queda en `http://localhost:5000`; el frontend lo consume mediante el proxy de Vite.
 
 ## Credenciales demo
 
@@ -28,6 +27,4 @@ Backend ASP.NET Web API para la app del frontend `Frontend`.
 - Docente: `docente@homeclass.com` / `docente123`
 - Estudiante: `estudiante@homeclass.com` / `estudiante123`
 
-## Nota
-
-Este backend se diseñó para ser compatible con el frontend actual y sirve como base de acceso, sesión y menú principal del sistema.
+La carpeta de archivos se configura mediante `HomeClassUploadPath`; si se omite, se usa `%LOCALAPPDATA%\HomeClass\Uploads`.

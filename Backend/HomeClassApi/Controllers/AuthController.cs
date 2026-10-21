@@ -27,6 +27,12 @@ namespace HomeClassApi.Controllers
                 return Error(HttpStatusCode.BadRequest, "Correo y contraseña son obligatorios.");
             }
 
+            var cuenta = AuthService.BuscarPorCorreo(request.Correo);
+            if (cuenta != null && !cuenta.Activo)
+            {
+                return Error(HttpStatusCode.Forbidden, "Tu cuenta está desactivada. Contacta al administrador.");
+            }
+
             var usuario = AuthService.ValidarLogin(request.Correo, request.Clave);
             if (usuario == null)
             {
@@ -76,11 +82,30 @@ namespace HomeClassApi.Controllers
             {
                 if (Tokens.TryGetValue(token, out var usuario))
                 {
-                    return usuario;
+                    var vigente = AuthService.ObtenerPorId(usuario.Id);
+                    if (vigente == null || !vigente.Activo)
+                    {
+                        Tokens.Remove(token);
+                        return null;
+                    }
+                    Tokens[token] = vigente;
+                    return vigente;
                 }
             }
 
             return null;
+        }
+
+        internal static void ActualizarSesion(UsuarioRespuesta usuario)
+        {
+            if (usuario == null) return;
+            lock (Tokens)
+            {
+                foreach (var token in new List<string>(Tokens.Keys))
+                {
+                    if (Tokens[token].Id == usuario.Id) Tokens[token] = usuario;
+                }
+            }
         }
     }
 }

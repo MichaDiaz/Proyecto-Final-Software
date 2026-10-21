@@ -1,9 +1,8 @@
 # HomeClass · Entorno Académico (Frontend)
 
 Aplicación web en **React + Vite** para organizar cursos y dar seguimiento académico a instituciones educativas.
-Los datos persistentes se consultan y modifican exclusivamente mediante la API HTTP documentada en `docs/API.md`.
-El backend y la base de datos aún deben implementarse; mientras tanto, el inicio de sesión y las funciones que
-requieren datos mostrarán un error de conexión y no guardarán registros de ejemplo en el navegador.
+Los datos persistentes se consultan y modifican mediante la API HTTP documentada en `docs/API.md`, implementada
+en `Backend/HomeClassApi` con ASP.NET Web API y SQL Server.
 
 ## Cómo correrlo
 
@@ -56,15 +55,17 @@ Frontend/
         └── estudiante/ CursoEstudiante
 ```
 
-## Cómo se conecta el backend después
+## Conexión con el backend
 
 1. Copia `.env.example` como `.env` y configura:
    ```
    VITE_API_URL=/api
    VITE_PROXY=http://localhost:5000      # dirección del backend en desarrollo
    ```
-2. Implementa en el backend los endpoints de **`docs/API.md`** (mismas rutas y mismas respuestas).
-3. `src/api/http.js` ya consume esas rutas. Ninguna pantalla necesita almacenar los registros localmente.
+2. Ejecuta el script `DB/Base web.sql` en SQL Server.
+3. Configura la cadena `HomeClassDb` en `Backend/HomeClassApi/Web.config` si SQL Server no está en `.`.
+4. Inicia `HomeClassApi` en Visual Studio y luego `npm run dev` en esta carpeta.
+5. `src/api/http.js` consume las rutas documentadas en `docs/API.md`; Vite reenvía `/api` a `localhost:5000`.
 
 Reglas que el backend debe aplicar sí o sí (el frontend solo las valida para dar mensajes rápidos):
 autenticación y permisos por rol y por curso, validación de tipo/tamaño de archivo, que los archivos se
