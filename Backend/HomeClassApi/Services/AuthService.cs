@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Data;
@@ -71,11 +72,10 @@ namespace HomeClassApi.Services
 
         public static IEnumerable<object> ObtenerCursos(string rol, int usuarioId)
         {
-            var filtro = rol == "docente"
-                ? "WHERE c.DocenteId = @UsuarioId"
-                : rol == "estudiante"
-                    ? "INNER JOIN dbo.Inscripcion i ON i.CursoId = c.Id AND i.EstudianteId = @UsuarioId"
-                    : string.Empty;
+            var filtro = rol == "estudiante"
+                ? "INNER JOIN dbo.Inscripcion i ON i.CursoId = c.Id AND i.EstudianteId = @UsuarioId"
+                : string.Empty;
+            var predicado = rol == "docente" ? "WHERE c.DocenteId = @UsuarioId " : string.Empty;
             var sql = "SELECT c.Id AS id, c.Codigo AS codigo, c.Nombre AS nombre, c.Periodo AS periodo, " +
                 "c.Descripcion AS descripcion, c.DocenteId AS docenteId, COALESCE(d.Nombre, N'Sin docente') AS docente, " +
                 "(SELECT COUNT(*) FROM dbo.Inscripcion i2 WHERE i2.CursoId = c.Id) AS estudiantes, " +
@@ -90,7 +90,7 @@ namespace HomeClassApi.Services
                 "OUTER APPLY (SELECT (SELECT SUM(g.Nota*e.Peso)/NULLIF(SUM(CASE WHEN g.Nota IS NOT NULL THEN e.Peso END),0) FROM dbo.Evaluacion e LEFT JOIN dbo.Calificacion g ON g.EvaluacionId=e.Id AND g.EstudianteId=@UsuarioId WHERE e.CursoId=c.Id) AS promedio, " +
                 "(SELECT 100.0*SUM(CASE WHEN a.Presente=1 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) FROM dbo.Asistencia a WHERE a.CursoId=c.Id AND a.EstudianteId=@UsuarioId) AS asistencia, " +
                 "(SELECT AVG(CAST(p.promedio AS FLOAT)) FROM dbo.Inscripcion i OUTER APPLY (SELECT SUM(g.Nota*e.Peso)/NULLIF(SUM(CASE WHEN g.Nota IS NOT NULL THEN e.Peso END),0) AS promedio FROM dbo.Evaluacion e LEFT JOIN dbo.Calificacion g ON g.EvaluacionId=e.Id AND g.EstudianteId=i.EstudianteId WHERE e.CursoId=c.Id) p WHERE i.CursoId=c.Id) AS promedioGrupo) propio " +
-                "ORDER BY c.Nombre";
+                predicado + "ORDER BY c.Nombre";
             return SqlData.Query(sql, SqlData.Param("@Rol", SqlDbType.VarChar, rol, 20), SqlData.Param("@UsuarioId", SqlDbType.Int, usuarioId));
         }
 

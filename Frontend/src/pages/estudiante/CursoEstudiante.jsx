@@ -4,6 +4,7 @@ import { api } from '../../api/index.js'
 import { useAviso } from '../../context/ToastContext.jsx'
 import useAsync from '../../hooks/useAsync.js'
 import SelectorArchivo from '../../components/SelectorArchivo.jsx'
+import AvisosCurso from '../../components/AvisosCurso.jsx'
 import { Badge, BadgeRiesgo, Cargando, Confirmar, Encabezado, ErrorCaja, StatCard, Vacio } from '../../components/ui.jsx'
 import { descargarBlob, listaExtensiones } from '../../utils/archivos.js'
 import { fechaCorta, fechaHora, num, tamano, TIPOS_EVALUACION } from '../../utils/formato.js'
@@ -41,6 +42,8 @@ export default function CursoEstudiante() {
       <div className="evaluaciones">
         {datos.evaluaciones.map((ev) => <TarjetaEvaluacion key={ev.id} ev={ev} alCambiar={recargar} />)}
       </div>
+
+      <AvisosCurso cursoId={id} />
 
       <section className="tarjeta">
         <h2>Materiales del curso</h2>

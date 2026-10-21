@@ -70,7 +70,7 @@ namespace HomeClassApi.Controllers
 
             if (usuario.Rol == "docente")
             {
-                var estudiantes = new List<object>();
+                var estudiantes = new List<Dictionary<string, object>>();
                 foreach (var curso in cursos)
                 {
                     var cursoId = Convert.ToInt32(curso["id"]);
@@ -81,7 +81,11 @@ namespace HomeClassApi.Controllers
                         var metrica = MetricasEstudiante(cursoId, Convert.ToInt32(fila["estudianteId"]));
                         var riesgo = Riesgo(metrica.promedio, metrica.asistencia);
                         if (riesgo == "alto" || riesgo == "moderado")
-                            estudiantes.Add(new { estudianteId = fila["estudianteId"], nombre = fila["nombre"], cursoId, curso = curso["nombre"], riesgo, promedio = metrica.promedio, asistencia = metrica.asistencia });
+                            estudiantes.Add(new Dictionary<string, object>
+                            {
+                                ["estudianteId"] = fila["estudianteId"], ["nombre"] = fila["nombre"], ["cursoId"] = cursoId,
+                                ["curso"] = curso["nombre"], ["riesgo"] = riesgo, ["promedio"] = metrica.promedio, ["asistencia"] = metrica.asistencia
+                            });
                     }
                 }
                 var porRevisar = Convert.ToInt32(SqlData.Scalar("SELECT COUNT(*) FROM dbo.Entrega e JOIN dbo.Evaluacion v ON v.Id=e.EvaluacionId JOIN dbo.Curso c ON c.Id=v.CursoId LEFT JOIN dbo.Calificacion g ON g.EvaluacionId=e.EvaluacionId AND g.EstudianteId=e.EstudianteId WHERE c.DocenteId=@Id AND g.Nota IS NULL",
@@ -93,7 +97,7 @@ namespace HomeClassApi.Controllers
                     rol = usuario.Rol,
                     cursos,
                     porRevisar,
-                    enRiesgoAlto = estudiantes.Cast<dynamic>().Count(e => e.riesgo == "alto"),
+                    enRiesgoAlto = estudiantes.Count(e => Equals(e["riesgo"], "alto")),
                     promedioGeneral = Media(cursos.Select(c => c["promedio"])),
                     alertas = estudiantes.Take(8),
                     proximas

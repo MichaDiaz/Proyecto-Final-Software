@@ -9,6 +9,7 @@ import Asistencia from './Asistencia.jsx'
 import Evaluaciones from './Evaluaciones.jsx'
 import Entregas from './Entregas.jsx'
 import Materiales from './Materiales.jsx'
+import AvisosCurso from '../../components/AvisosCurso.jsx'
 
 const PESTANAS = [
   { id: 'notas', etiqueta: 'Calificaciones', icono: 'bi-journal-check' },
@@ -16,6 +17,7 @@ const PESTANAS = [
   { id: 'evaluaciones', etiqueta: 'Evaluaciones', icono: 'bi-clipboard2-check' },
   { id: 'entregas', etiqueta: 'Entregas', icono: 'bi-inbox' },
   { id: 'materiales', etiqueta: 'Materiales', icono: 'bi-folder2-open' },
+  { id: 'avisos', etiqueta: 'Avisos', icono: 'bi-megaphone' },
 ]
 
 export default function CursoDocente() {
@@ -51,6 +53,7 @@ export default function CursoDocente() {
         {pestana === 'evaluaciones' && <Evaluaciones cursoId={id} alVerEntregas={verEntregas} alCambiar={recargarResumen} />}
         {pestana === 'entregas' && <Entregas cursoId={id} evaluacionInicial={evaluacionId} alCalificar={recargarResumen} />}
         {pestana === 'materiales' && <Materiales cursoId={id} />}
+        {pestana === 'avisos' && <AvisosCurso cursoId={id} puedePublicar />}
       </div>
     </>
   )

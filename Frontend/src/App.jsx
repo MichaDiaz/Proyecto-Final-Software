@@ -10,6 +10,9 @@ import Cursos from './pages/Cursos.jsx'
 import CursoDetalle from './pages/CursoDetalle.jsx'
 import Usuarios from './pages/admin/Usuarios.jsx'
 import Perfil from './pages/Perfil.jsx'
+import Agenda from './pages/Agenda.jsx'
+import Historial from './pages/estudiante/Historial.jsx'
+import Reportes from './pages/admin/Reportes.jsx'
 
 // RUTAS. Cada <Route> dice "cuando la dirección sea X, muestra la página Y".
 //  - Públicas: /, /ingresar
@@ -30,6 +33,13 @@ export default function App() {
           <Route path="perfil" element={<Perfil />} />
           <Route element={<RutaProtegida roles={['admin']} />}>
             <Route path="usuarios" element={<Usuarios />} />
+            <Route path="reportes" element={<Reportes />} />
+          </Route>
+          <Route element={<RutaProtegida roles={['docente', 'estudiante']} />}>
+            <Route path="agenda" element={<Agenda />} />
+          </Route>
+          <Route element={<RutaProtegida roles={['estudiante']} />}>
+            <Route path="historial" element={<Historial />} />
           </Route>
         </Route>
       </Route>

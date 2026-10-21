@@ -35,6 +35,16 @@ Base: `VITE_API_URL` (por defecto `/api`). Autenticación: `Authorization: Beare
 | `PUT /usuarios/{id}` | `{ nombre, correo, rol, activo }` | `usuario` · no puede desactivarse ni cambiar su propio rol |
 | `DELETE /usuarios/{id}` | | 204 · no puede borrarse a sí mismo; un docente con cursos no se borra |
 
+## Reportes y comunicación
+
+| Método y ruta | Quién | Respuesta |
+|---|---|---|
+| `GET /admin/auditoria?limite=100` | admin | eventos recientes: fecha, usuario, acción, entidad y detalle (máximo 300) |
+| `GET /cursos/{id}/avisos` | con acceso al curso | avisos del curso, del más reciente al más antiguo |
+| `POST /cursos/{id}/avisos` | docente asignado | `{ titulo, mensaje }` → aviso publicado |
+| `GET /agenda` | docente/estudiante | evaluaciones y avisos de los cursos propios o matriculados |
+| `GET /estudiante/historial` | estudiante | evaluaciones, notas, estados y entregas de sus cursos |
+
 ## Perfil (cualquier rol)
 
 | `PUT /perfil` | `{ nombre }` | `usuario` |

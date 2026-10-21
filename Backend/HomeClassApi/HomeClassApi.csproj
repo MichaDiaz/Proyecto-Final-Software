@@ -65,6 +65,8 @@
     <Compile Include="Controllers\CursosController.cs" />
     <Compile Include="Controllers\PerfilController.cs" />
     <Compile Include="Controllers\AcademicoController.cs" />
+    <Compile Include="Controllers\ComunicacionController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Global.asax.cs" />
     <Compile Include="Models\AuthModels.cs" />
     <Compile Include="Services\AuthService.cs" />

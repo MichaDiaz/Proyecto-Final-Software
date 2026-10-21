@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
@@ -73,6 +74,7 @@ namespace HomeClassApi.Controllers
                 var id = Convert.ToInt32(SqlData.Scalar(
                     "INSERT dbo.Curso (Codigo, Nombre, Periodo, Descripcion, DocenteId) OUTPUT INSERTED.Id VALUES (@Codigo, @Nombre, @Periodo, @Descripcion, @DocenteId)",
                     ParamCurso(curso)));
+                SqlData.RegistrarAuditoria(actual.Id, "Creó", "Curso", id, curso.Codigo.Trim());
                 return Ok(ObtenerCursoResumen(id));
             }
             catch (System.Data.SqlClient.SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
@@ -95,6 +97,7 @@ namespace HomeClassApi.Controllers
                 var parametros = ParamCurso(curso).Concat(new[] { SqlData.Param("@Id", SqlDbType.Int, id) }).ToArray();
                 var count = SqlData.Execute("UPDATE dbo.Curso SET Codigo=@Codigo, Nombre=@Nombre, Periodo=@Periodo, Descripcion=@Descripcion, DocenteId=@DocenteId WHERE Id=@Id", parametros);
                 if (count == 0) return Error(HttpStatusCode.NotFound, "Curso no encontrado.");
+                SqlData.RegistrarAuditoria(actual.Id, "Actualizó", "Curso", id, curso.Codigo.Trim());
                 return Ok(ObtenerCursoResumen(id));
             }
             catch (System.Data.SqlClient.SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
@@ -114,6 +117,7 @@ namespace HomeClassApi.Controllers
                 SqlData.Param("@Id", SqlDbType.Int, id));
             var count = SqlData.Execute("DELETE FROM dbo.Curso WHERE Id=@Id", SqlData.Param("@Id", SqlDbType.Int, id));
             if (count == 0) return Error(HttpStatusCode.NotFound, "Curso no encontrado.");
+            SqlData.RegistrarAuditoria(actual.Id, "Eliminó", "Curso", id, id.ToString());
             foreach (var archivo in archivos) AcademicoController.EliminarArchivoPrivado(Convert.ToString(archivo["ruta"]));
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -133,6 +137,7 @@ namespace HomeClassApi.Controllers
             {
                 SqlData.Execute("INSERT dbo.Inscripcion (CursoId, EstudianteId) VALUES (@CursoId, @EstudianteId)",
                     SqlData.Param("@CursoId", SqlDbType.Int, id), SqlData.Param("@EstudianteId", SqlDbType.Int, request.EstudianteId));
+                SqlData.RegistrarAuditoria(actual.Id, "Matriculó", "Curso", id, "EstudianteId=" + request.EstudianteId);
                 return StatusCode(HttpStatusCode.NoContent);
             }
             catch (System.Data.SqlClient.SqlException ex) when (ex.Number == 2627)
@@ -159,6 +164,7 @@ namespace HomeClassApi.Controllers
                 SqlData.Param("@CursoId", SqlDbType.Int, id), SqlData.Param("@EstudianteId", SqlDbType.Int, estudianteId));
             if (count == 0) return Error(HttpStatusCode.NotFound, "La matrícula no existe.");
             foreach (var archivo in archivos) AcademicoController.EliminarArchivoPrivado(Convert.ToString(archivo["ruta"]));
+            SqlData.RegistrarAuditoria(actual.Id, "Retiró matrícula", "Curso", id, "EstudianteId=" + estudianteId);
             return StatusCode(HttpStatusCode.NoContent);
         }
 

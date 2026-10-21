@@ -66,6 +66,7 @@ namespace HomeClassApi.Controllers
             if (pesoActual + request.Peso > 100) return Error(HttpStatusCode.Conflict, "La suma de los pesos del curso no puede superar 100%.");
             var id = Convert.ToInt32(SqlData.Scalar("INSERT dbo.Evaluacion (CursoId,Nombre,Tipo,Peso,Fecha,Instrucciones,RequiereEntrega,Extensiones,MaxMb,PermiteTardia) OUTPUT INSERTED.Id VALUES (@CursoId,@Nombre,@Tipo,@Peso,@Fecha,@Instrucciones,@RequiereEntrega,@Extensiones,@MaxMb,@PermiteTardia)",
                 ParamEvaluacion(cursoId, request)));
+            SqlData.RegistrarAuditoria(actual.Id, "Creó", "Evaluación", id, request.Nombre.Trim());
             return Ok(ObtenerEvaluacion(id));
         }
 
@@ -85,6 +86,7 @@ namespace HomeClassApi.Controllers
             if (pesoActual + request.Peso > 100) return Error(HttpStatusCode.Conflict, "La suma de los pesos del curso no puede superar 100%.");
             var parametros = ParamEvaluacion(cursoId.Value, request).Concat(new[] { SqlData.Param("@Id", SqlDbType.Int, id) }).ToArray();
             SqlData.Execute("UPDATE dbo.Evaluacion SET Nombre=@Nombre,Tipo=@Tipo,Peso=@Peso,Fecha=@Fecha,Instrucciones=@Instrucciones,RequiereEntrega=@RequiereEntrega,Extensiones=@Extensiones,MaxMb=@MaxMb,PermiteTardia=@PermiteTardia WHERE Id=@Id", parametros);
+            SqlData.RegistrarAuditoria(actual.Id, "Actualizó", "Evaluación", id, request.Nombre.Trim());
             return Ok(ObtenerEvaluacion(id));
         }
 
@@ -100,6 +102,7 @@ namespace HomeClassApi.Controllers
             var archivos = SqlData.Query("SELECT RutaInterna AS ruta FROM dbo.Entrega WHERE EvaluacionId=@Id", SqlData.Param("@Id", SqlDbType.Int, id));
             SqlData.Execute("DELETE FROM dbo.Evaluacion WHERE Id=@Id", SqlData.Param("@Id", SqlDbType.Int, id));
             foreach (var archivo in archivos) EliminarArchivo(Convert.ToString(archivo["ruta"]));
+            SqlData.RegistrarAuditoria(actual.Id, "Eliminó", "Evaluación", id, id.ToString());
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -151,6 +154,7 @@ namespace HomeClassApi.Controllers
                 return Error(HttpStatusCode.NotFound, "El estudiante no está matriculado en este curso.");
             SqlData.Execute("IF EXISTS (SELECT 1 FROM dbo.Calificacion WHERE EvaluacionId=@EvaluacionId AND EstudianteId=@EstudianteId) UPDATE dbo.Calificacion SET Nota=@Nota WHERE EvaluacionId=@EvaluacionId AND EstudianteId=@EstudianteId ELSE INSERT dbo.Calificacion (EvaluacionId,EstudianteId,Nota) VALUES (@EvaluacionId,@EstudianteId,@Nota)",
                 SqlData.Param("@EvaluacionId", SqlDbType.Int, evaluacionId), SqlData.Param("@EstudianteId", SqlDbType.Int, estudianteId), SqlData.Param("@Nota", SqlDbType.Decimal, request.Nota));
+            SqlData.RegistrarAuditoria(actual.Id, "Calificó", "Evaluación", evaluacionId, "EstudianteId=" + estudianteId);
             var promedio = SqlData.Scalar("SELECT SUM(g.Nota*e.Peso)/NULLIF(SUM(CASE WHEN g.Nota IS NOT NULL THEN e.Peso END),0) FROM dbo.Evaluacion e LEFT JOIN dbo.Calificacion g ON g.EvaluacionId=e.Id AND g.EstudianteId=@EstudianteId WHERE e.CursoId=@CursoId",
                 SqlData.Param("@EstudianteId", SqlDbType.Int, estudianteId), SqlData.Param("@CursoId", SqlDbType.Int, cursoId.Value));
             var asistencia = SqlData.Scalar("SELECT 100.0*SUM(CASE WHEN Presente=1 THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0) FROM dbo.Asistencia WHERE CursoId=@CursoId AND EstudianteId=@EstudianteId",
@@ -192,6 +196,7 @@ namespace HomeClassApi.Controllers
                 SqlData.Execute("INSERT dbo.Asistencia (CursoId,EstudianteId,Fecha,Presente) VALUES (@CursoId,@EstudianteId,@Fecha,@Presente)",
                     SqlData.Param("@CursoId", SqlDbType.Int, cursoId), SqlData.Param("@EstudianteId", SqlDbType.Int, registro.EstudianteId),
                     SqlData.Param("@Fecha", SqlDbType.Date, dia.Date), SqlData.Param("@Presente", SqlDbType.Bit, registro.Presente));
+            SqlData.RegistrarAuditoria(actual.Id, "Registró asistencia", "Curso", cursoId, dia.ToString("yyyy-MM-dd"));
             return StatusCode(HttpStatusCode.NoContent);
         }
 

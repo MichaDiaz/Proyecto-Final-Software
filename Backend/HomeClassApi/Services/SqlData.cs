@@ -55,6 +55,16 @@ namespace HomeClassApi.Services
             }
         }
 
+        public static void RegistrarAuditoria(int? usuarioId, string accion, string entidad, int? entidadId, string detalle)
+        {
+            Execute("INSERT dbo.Auditoria (UsuarioId,Accion,Entidad,EntidadId,Detalle) VALUES (@UsuarioId,@Accion,@Entidad,@EntidadId,@Detalle)",
+                Param("@UsuarioId", SqlDbType.Int, usuarioId),
+                Param("@Accion", SqlDbType.NVarChar, accion, 40),
+                Param("@Entidad", SqlDbType.NVarChar, entidad, 40),
+                Param("@EntidadId", SqlDbType.Int, entidadId),
+                Param("@Detalle", SqlDbType.NVarChar, detalle, 500));
+        }
+
         public static SqlParameter Param(string name, SqlDbType type, object value, int size = 0)
         {
             var parameter = size > 0 ? new SqlParameter(name, type, size) : new SqlParameter(name, type);

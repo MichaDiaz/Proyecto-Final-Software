@@ -51,6 +51,7 @@ export const httpApi = {
     salir: async () => {},
   },
   dashboard: { obtener: () => get('/dashboard') },
+  admin: { auditoria: (limite = 100) => get(`/admin/auditoria?limite=${limite}`) },
   usuarios: {
     listar: () => get('/usuarios'),
     crear: (d) => post('/usuarios', d),
@@ -108,4 +109,10 @@ export const httpApi = {
     retirar: (evaluacionId) => del(`/evaluaciones/${evaluacionId}/entrega`),
     descargar: (id) => get(`/entregas/${id}/archivo`, { blob: true }),
   },
+  avisos: {
+    listar: (cursoId) => get(`/cursos/${cursoId}/avisos`),
+    publicar: (cursoId, d) => post(`/cursos/${cursoId}/avisos`, d),
+  },
+  agenda: { listar: () => get('/agenda') },
+  estudiante: { historial: () => get('/estudiante/historial') },
 }

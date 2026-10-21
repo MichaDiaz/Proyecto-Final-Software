@@ -8,16 +8,20 @@ const MENU = {
     { a: '/app', t: 'Resumen', i: 'bi-speedometer2', fin: true },
     { a: '/app/usuarios', t: 'Usuarios', i: 'bi-people' },
     { a: '/app/cursos', t: 'Cursos', i: 'bi-journal-bookmark' },
+    { a: '/app/reportes', t: 'Reportes', i: 'bi-clipboard-data' },
     { a: '/app/perfil', t: 'Mi perfil', i: 'bi-person-gear' },
   ],
   docente: [
     { a: '/app', t: 'Resumen', i: 'bi-speedometer2', fin: true },
     { a: '/app/cursos', t: 'Mis cursos', i: 'bi-easel' },
+    { a: '/app/agenda', t: 'Agenda', i: 'bi-calendar3' },
     { a: '/app/perfil', t: 'Mi perfil', i: 'bi-person-gear' },
   ],
   estudiante: [
     { a: '/app', t: 'Resumen', i: 'bi-speedometer2', fin: true },
     { a: '/app/cursos', t: 'Mis cursos', i: 'bi-mortarboard' },
+    { a: '/app/agenda', t: 'Agenda', i: 'bi-calendar3' },
+    { a: '/app/historial', t: 'Historial académico', i: 'bi-clock-history' },
     { a: '/app/perfil', t: 'Mi perfil', i: 'bi-person-gear' },
   ],
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -66,6 +67,7 @@ namespace HomeClassApi.Controllers
                     SqlData.Param("@Correo", SqlDbType.NVarChar, usuario.Correo.Trim(), 254),
                     SqlData.Param("@ClaveHash", SqlDbType.VarChar, AuthService.Hash(usuario.Clave), 120),
                     SqlData.Param("@Rol", SqlDbType.VarChar, usuario.Rol, 20)));
+                SqlData.RegistrarAuditoria(usuarioActual.Id, "Creó", "Usuario", id, usuario.Correo.Trim());
                 return Ok(AuthService.ObtenerPorId(id));
             }
             catch (System.Data.SqlClient.SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
@@ -97,6 +99,7 @@ namespace HomeClassApi.Controllers
                     SqlData.Param("@Activo", SqlDbType.Bit, usuario.Activo),
                     SqlData.Param("@Id", SqlDbType.Int, id));
                 if (count == 0) return Error(HttpStatusCode.NotFound, "Usuario no encontrado.");
+                SqlData.RegistrarAuditoria(actual.Id, "Actualizó", "Usuario", id, usuario.Correo.Trim());
                 return Ok(AuthService.ObtenerPorId(id));
             }
             catch (System.Data.SqlClient.SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
@@ -121,6 +124,7 @@ namespace HomeClassApi.Controllers
                 ? SqlData.Query("SELECT RutaInterna AS ruta FROM dbo.Entrega WHERE EstudianteId=@Id", SqlData.Param("@Id", SqlDbType.Int, id))
                 : new List<System.Collections.Generic.Dictionary<string, object>>();
             SqlData.Execute("DELETE FROM dbo.Usuario WHERE Id = @Id", SqlData.Param("@Id", SqlDbType.Int, id));
+            SqlData.RegistrarAuditoria(actual.Id, "Eliminó", "Usuario", id, usuario.Correo);
             foreach (var archivo in archivos) AcademicoController.EliminarArchivoPrivado(System.Convert.ToString(archivo["ruta"]));
             return StatusCode(HttpStatusCode.NoContent);
         }

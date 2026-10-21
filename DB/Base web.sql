@@ -116,6 +116,33 @@ BEGIN
 END
 GO
 
+IF OBJECT_ID(N'dbo.Aviso', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Aviso (
+        Id INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Aviso PRIMARY KEY,
+        CursoId INT NOT NULL CONSTRAINT FK_Aviso_Curso REFERENCES dbo.Curso(Id) ON DELETE CASCADE,
+        AutorId INT NULL CONSTRAINT FK_Aviso_Autor REFERENCES dbo.Usuario(Id) ON DELETE SET NULL,
+        Titulo NVARCHAR(120) NOT NULL,
+        Mensaje NVARCHAR(2000) NOT NULL,
+        Fecha DATETIME2 NOT NULL CONSTRAINT DF_Aviso_Fecha DEFAULT (SYSUTCDATETIME())
+    );
+END
+GO
+
+IF OBJECT_ID(N'dbo.Auditoria', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Auditoria (
+        Id BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Auditoria PRIMARY KEY,
+        UsuarioId INT NULL,
+        Accion NVARCHAR(40) NOT NULL,
+        Entidad NVARCHAR(40) NOT NULL,
+        EntidadId INT NULL,
+        Detalle NVARCHAR(500) NULL,
+        Fecha DATETIME2 NOT NULL CONSTRAINT DF_Auditoria_Fecha DEFAULT (SYSUTCDATETIME())
+    );
+END
+GO
+
 IF OBJECT_ID(N'dbo.Usuario', N'U') IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Usuario WHERE Correo=N'admin@homeclass.com')
     INSERT dbo.Usuario (Nombre, Correo, ClaveHash, Rol, Activo)
     VALUES (N'Administrador', N'admin@homeclass.com', CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', CONVERT(VARBINARY(MAX), 'admin123')), 2), 'admin', 1);
@@ -129,13 +156,13 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Curso WHERE Codigo=N'CS101')
     INSERT dbo.Curso (Codigo, Nombre, Periodo, Descripcion, DocenteId)
-    SELECT N'CS101', N'Programación I', N'2026-1', N'Fundamentos de programación.', Id FROM dbo.Usuario WHERE Correo=N'docente@homeclass.com';
+    SELECT N'CS101', N'Programaci' + NCHAR(243) + N'n I', N'2026-1', N'Fundamentos de programaci' + NCHAR(243) + N'n.', Id FROM dbo.Usuario WHERE Correo=N'docente@homeclass.com';
 IF NOT EXISTS (SELECT 1 FROM dbo.Curso WHERE Codigo=N'DB201')
     INSERT dbo.Curso (Codigo, Nombre, Periodo, Descripcion, DocenteId)
-    SELECT N'DB201', N'Bases de Datos', N'2026-1', N'Diseño y consulta de BD.', Id FROM dbo.Usuario WHERE Correo=N'docente@homeclass.com';
+    SELECT N'DB201', N'Bases de Datos', N'2026-1', N'Dise' + NCHAR(241) + N'o y consulta de BD.', Id FROM dbo.Usuario WHERE Correo=N'docente@homeclass.com';
 IF NOT EXISTS (SELECT 1 FROM dbo.Curso WHERE Codigo=N'ENG301')
     INSERT dbo.Curso (Codigo, Nombre, Periodo, Descripcion, DocenteId)
-    SELECT N'ENG301', N'Inglés Técnico', N'2026-1', N'Comunicación técnica.', Id FROM dbo.Usuario WHERE Correo=N'docente@homeclass.com';
+    SELECT N'ENG301', N'Ingl' + NCHAR(233) + N's T' + NCHAR(233) + N'cnico', N'2026-1', N'Comunicaci' + NCHAR(243) + N'n t' + NCHAR(233) + N'cnica.', Id FROM dbo.Usuario WHERE Correo=N'docente@homeclass.com';
 GO
 
 INSERT dbo.Inscripcion (CursoId, EstudianteId)
@@ -146,10 +173,10 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Evaluacion e JOIN dbo.Curso c ON c.Id=e.CursoId WHERE c.Codigo=N'CS101' AND e.Nombre=N'Tarea 1')
     INSERT dbo.Evaluacion (CursoId,Nombre,Tipo,Peso,Fecha,Instrucciones,RequiereEntrega,Extensiones,MaxMb,PermiteTardia)
-    SELECT Id,N'Tarea 1','tarea',40,DATEADD(DAY,5,CAST(GETDATE() AS DATE)),N'Entrega el ejercicio de programación.',1,N'pdf,docx,zip',10,0 FROM dbo.Curso WHERE Codigo=N'CS101';
+    SELECT Id,N'Tarea 1','tarea',40,DATEADD(DAY,5,CAST(GETDATE() AS DATE)),N'Entrega el ejercicio de programaci' + NCHAR(243) + N'n.',1,N'pdf,docx,zip',10,0 FROM dbo.Curso WHERE Codigo=N'CS101';
 IF NOT EXISTS (SELECT 1 FROM dbo.Evaluacion e JOIN dbo.Curso c ON c.Id=e.CursoId WHERE c.Codigo=N'DB201' AND e.Nombre=N'Control 1')
     INSERT dbo.Evaluacion (CursoId,Nombre,Tipo,Peso,Fecha,Instrucciones,RequiereEntrega,Extensiones,MaxMb,PermiteTardia)
-    SELECT Id,N'Control 1','examen',60,DATEADD(DAY,-3,CAST(GETDATE() AS DATE)),N'Control de conceptos básicos.',0,NULL,25,0 FROM dbo.Curso WHERE Codigo=N'DB201';
+    SELECT Id,N'Control 1','examen',60,DATEADD(DAY,-3,CAST(GETDATE() AS DATE)),N'Control de conceptos b' + NCHAR(225) + N'sicos.',0,NULL,25,0 FROM dbo.Curso WHERE Codigo=N'DB201';
 GO
 
 INSERT dbo.Calificacion (EvaluacionId,EstudianteId,Nota)

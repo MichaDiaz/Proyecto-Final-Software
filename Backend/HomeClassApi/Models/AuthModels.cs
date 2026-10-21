@@ -113,4 +113,10 @@ namespace HomeClassApi.Models
         public int EstudianteId { get; set; }
         public bool Presente { get; set; }
     }
+
+    public class AvisoRequest
+    {
+        public string Titulo { get; set; }
+        public string Mensaje { get; set; }
+    }
 }
