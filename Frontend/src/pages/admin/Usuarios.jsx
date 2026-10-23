@@ -143,10 +143,6 @@ function FormularioRestablecer({ usuario, alCerrar, alGuardar }) {
 
   async function enviar(e) {
     e.preventDefault()
-    if (form.rol === 'admin' && !form.permisosAdmin?.length) {
-      setError('Selecciona al menos una capacidad para el administrador.')
-      return
-    }
     setEnviando(true)
     setError(null)
     try {
