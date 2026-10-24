@@ -24,7 +24,7 @@ CREATE TABLE [SQM_SECURITY].Estudiantes (
     CONSTRAINT FK_Estudiante_Usuario FOREIGN KEY (UsuarioID) 
     REFERENCES [SQM_SECURITY].Usuarios(UsuarioID)
 );
-GO
+GO;
 
 CREATE TABLE [SQM_SECURITY].Docentes (
     DocenteID INT IDENTITY(1,1) PRIMARY KEY,
@@ -36,7 +36,7 @@ CREATE TABLE [SQM_SECURITY].Docentes (
     CONSTRAINT FK_Docente_Usuario FOREIGN KEY (UsuarioID) 
     REFERENCES [SQM_SECURITY].Usuarios(UsuarioID)
 );
-GO
+GO;
 
 CREATE TABLE [SQM_ACADEMIC].Cursos (
     CursoID INT IDENTITY(1,1) PRIMARY KEY,
@@ -46,7 +46,7 @@ CREATE TABLE [SQM_ACADEMIC].Cursos (
     CONSTRAINT FK_Curso_Docente FOREIGN KEY (DocenteID) 
     REFERENCES [SQM_SECURITY].Docentes(DocenteID)
 );
-GO
+GO;
 
 CREATE TABLE [SQM_ACADEMIC].Inscripciones (
     InscripcionID INT IDENTITY(1,1) PRIMARY KEY,
