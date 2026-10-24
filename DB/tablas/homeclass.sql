@@ -58,7 +58,7 @@ CREATE TABLE [SQM_ACADEMIC].Inscripciones (
     CONSTRAINT FK_Inscripcion_Curso FOREIGN KEY (CursoID) 
     REFERENCES [SQM_ACADEMICO].Cursos(CursoID)
 );
-GO
+GO;
 
 CREATE TABLE [SQM_EVALUATIONS].Evaluaciones (
     EvaluacionID INT IDENTITY(1,1) PRIMARY KEY,
@@ -68,7 +68,7 @@ CREATE TABLE [SQM_EVALUATIONS].Evaluaciones (
     CONSTRAINT FK_Evaluacion_Curso FOREIGN KEY (CursoID) 
     REFERENCES [SQM_ACADEMIC].Cursos(CursoID)
 );
-GO
+GO;
 
 CREATE TABLE [SQM_EVALUATIONS].Calificaciones (
     CalificacionID INT IDENTITY(1,1) PRIMARY KEY,
